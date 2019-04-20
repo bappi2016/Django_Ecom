@@ -20,14 +20,22 @@ from django.conf import settings
 from django.conf.urls.static import static
 from products.views import ProductListView,\
     ProductDetailView,ProductFeaturedListView,ProductFeaturedDetailView
+from carts.views import cart
 
 
 urlpatterns = [
     url(r'^admin/',admin.site.urls),
-    # url(r'^accounts/', include("accounts.urls", namespace='accounts')),
-    url(r'^$', ProductListView.as_view(), name='productlist'),
+    url(r'^accounts/', include("accounts.urls", namespace='accounts')),
+    url(r'^cart/', include("carts.urls", namespace='carts')),
+    url(r'^$',ProductListView.as_view(), name='productlist'),
     path('featured', ProductFeaturedListView.as_view(), name='featured_list'),
     path('products/<slug:slug>', ProductDetailView.as_view(), name='productdetail'),
     url(r'^featured/(?P<slug>\d+)/$',ProductFeaturedDetailView.as_view())
 
-]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+

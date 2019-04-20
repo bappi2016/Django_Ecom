@@ -88,11 +88,15 @@ class Product(models.Model):
 
 from .utils import unique_slug_generator
 
-def pre_save_post_receiver(sender, instance, *args,
-                               **kwargs):  # to make sure this function send every time when we create title or slug we need a sender signal to do so
+ # lets define a receiver signal function for creating slug which will takes a sender argument-in this case Produc Model, along with wildcard keyword arguments (**kwargs--slug); all signal handlers must take these arguments.
+# The callback function which will be connected to the pre_save signal receiver
+def pre_save_post_receiver(sender,instance, *args,**kwargs):  # here keyword instance arguments refer to the model itself to make sure this function send every time when we create title or slug we need a sender signal to do so
     if not instance.slug:  # if there is no slug present
         # instance.slug = create_slug(instance)
-        instance.slug = unique_slug_generator(instance)
+        instance.slug = unique_slug_generator(instance) # if slug field is not exist in the model ..generate it
 
-pre_save.connect(pre_save_post_receiver,
-                 sender=Product)  # by signal pre save will run the function every time a model is created
+# pre_save will sent at the beginning of a model’s save() method.
+# here sender is the model class
+# connect the  receiver to the signal
+pre_save.connect(pre_save_post_receiver,sender=Product) # the sender will be the model class being saved, so you can indicate that you only want signals sent by some model:
+# signal pre_save will run the function before every time a model is created or gets save

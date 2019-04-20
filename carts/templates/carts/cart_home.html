@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+	<!--================Home Banner Area =================-->
+	<section class="banner_area">
+		<div class="banner_inner d-flex align-items-center">
+			<div class="container">
+				<div class="banner_content text-center">
+					<h2>Shopping Cart</h2>
+					<div class="page_link">
+						<a href="index.html">Home</a>
+						<a href="carthome.html">Cart</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Home Banner Area =================-->
+
+		<!--================Cart Area =================-->
+	<section class="cart_area">
+		<div class="container">
+			<div class="cart_inner">
+				<div class="table-responsive">
+                    {% if cart.products.exists %}
+					    <table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Product</th>
+								<th scope="col">Price</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Total</th>
+							</tr>
+						</thead>
+                        {%for product in cart.products.all %}
+						    <tbody>
+
+							<tr>
+								<td>
+                                    <div class="container">
+                                            <div class="col-md-2 px-0">
+                                                <img src="{{product.image.url}}" class="img-fluid">
+                                            </div>
+                                            <div class="media-body">
+                                                <p><a href="{{ product.get_absolute_url }}">{{product.title}}</a></p>
+												{% include 'carts/updatecart.html' with product=product cart=cart in_cart=True %}
+                                            </div>
+                                    </div>
+
+                                </td>
+								<td>
+									<h5>${{product.price}}</h5>
+								</td>
+								<td>
+									<!--<div class="product_count">-->
+										<!--<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">-->
+										<!--<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"-->
+										 <!--class="increase items-count" type="button">-->
+											<!--<i class="lnr lnr-chevron-up"></i>-->
+										<!--</button>-->
+										<!--<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value&#45;&#45;;return false;"-->
+										 <!--class="reduced items-count" type="button">-->
+											<!--<i class="lnr lnr-chevron-down"></i>-->
+										<!--</button>-->
+									<!--</div>-->
+								</td>
+								<td>
+									<h5>${{product.price}}</h5>
+								</td>
+							</tr>
+                            {% endfor %}
+							<!--<tr class="bottom_button">-->
+								<!--<td>-->
+									<!--<a class="gray_btn" href="#">Update Cart</a>-->
+								<!--</td>-->
+								<!--<td>-->
+
+								<!--</td>-->
+								<!--<td>-->
+
+								<!--</td>-->
+								<!--<td>-->
+									<!--<div class="cupon_text">-->
+										<!--<input type="text" placeholder="Coupon Code">-->
+										<!--<a class="main_btn" href="#">Apply</a>-->
+										<!--<a class="gray_btn" href="#">Close Coupon</a>-->
+									<!--</div>-->
+								<!--</td>-->
+							<!--</tr>-->
+							<tr>
+								<td>
+									<h5>Subtotal</h5>
+								</td>
+								<td>
+									<h5>{{cart.subtotal}}</h5>
+								</td>
+                                <td>
+									<h5>Total</h5>
+								</td>
+								<td>
+									<h5>{{cart.total}}</h5>
+								</td>
+
+
+							</tr>
+							<tr>
+								<td>
+									<div class="checkout_btn_inner">
+										<a class="gray_btn" href="#">Continue Shopping</a>
+										<a class="main_btn" href="#">Proceed to checkout</a>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+					</table>
+                    {% else %}
+                    <h4 style="text-align:center">Cart is empty</h4>
+                    {% endif %}
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Cart Area =================-->
+{% endblock %}

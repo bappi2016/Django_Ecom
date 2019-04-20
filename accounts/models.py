@@ -24,7 +24,7 @@ class UserManager(BaseUserManager): # sub class the BaseUser Manager to create a
     # checker must be passing "password" as a keyword argument
     # password = None means the minimal requirement is that "password" must exist as a parameter, but a default value is not required.
     # None is the default value for password if password is not explicitly provided.
-    def create_user(self, email, password=None,is_active=True,is_staff=False,is_admin=False): # here the required arguments is email
+    def create_user(self, email,full_name, password=None,is_active=True,is_staff=False,is_admin=False): # here the required arguments is email
         """
         Creates and saves an anonymous  User with the given email and password.
         """
@@ -32,6 +32,8 @@ class UserManager(BaseUserManager): # sub class the BaseUser Manager to create a
             raise ValueError('Users must have an email address')
         if not password:
             raise ValueError('Users must have a password')
+        if not full_name:
+            raise ValueError('Users must have a full name')
         # define a variable user and assign it as a model field attribute of model manager
         # if not the email being passed into this create user model then just create it and passed an email
         user = self.model(
@@ -43,28 +45,31 @@ class UserManager(BaseUserManager): # sub class the BaseUser Manager to create a
         # will be stored as staff = 0 because is_staff is set to False
         user.staff = is_staff # additional parameter pass within the user object which will stored to the db as mention in the function definition or boolean field
         user.admin= is_admin
+        user.full_name = full_name
         user.active = is_active # by default set to true that means active
         user.save(using=self._db)
         return user
 
-    def create_staffuser(self, email, password):
+    def create_staffuser(self, email,full_name, password):
         """
         Creates and saves a staff user with the given email and password.
         """
         user = self.create_user(
             email,
+            full_name,
             password=password,
         )
         user.staff = True # this controls access to the admin site.
         user.save(using=self._db) # user.save() is saving the data from the form to the database
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, email,full_name, password):
         """
         Creates and saves a superuser with the given email and password.
         """
         user = self.create_user(
             email,
+            full_name,
             password=password,
         )
         user.staff = True #  when True, the user has all available permissions
@@ -78,6 +83,7 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True, # We need to add the unique=True parameter to whatever field we are using as the USERNAME_FIELD
     )
+    full_name = models.CharField(max_length=255,blank=True,null=True)
     active = models.BooleanField(default=True) # can login
     staff = models.BooleanField(default=False) # a admin user; non super-user
     admin = models.BooleanField(default=False) # a superuser
@@ -85,11 +91,11 @@ class User(AbstractBaseUser):
     timestapm = models.DateTimeField(default=now())
 
     USERNAME_FIELD = 'email'  # that's how Django is going to recognize this user. It replaces the built-in username field for whatever you designate. In this case, we said it was the email.
-    REQUIRED_FIELDS = [] # Email & Password are required by default.- by createsuperuser
+    REQUIRED_FIELDS = ['full_name'] # Email & Password are required by default.- by createsuperuser
 
-    def get_full_name(self):
+    def get_full_name(self): # by default required by django
         # The user is identified by their email address
-        return self.email
+        return self.full_name
 
     def get_short_name(self): # add a get_short_name method, as Django expects a short name to be available for each user. This can be whatever field you want.
         # The user is identified by their email address
@@ -125,11 +131,3 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-# accounts.models.py
-
-
-
-# # hook in the New Manager to our Model
-# class User(AbstractBaseUser): # from step 2
-#     ...
-#     objects = UserManager()

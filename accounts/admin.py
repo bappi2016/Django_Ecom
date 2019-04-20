@@ -13,8 +13,8 @@ from .models import User
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
-    form = UserAdminChangeForm
-    add_form = UserAdminCreationForm
+    form = UserAdminChangeForm # edit or update view
+    add_form = UserAdminCreationForm # create view
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('admin','staff','active')
     fieldsets = (
         (None, {'fields': ('email', 'password',)}),
-        ('Personal info', {'fields': ()}),
+        ('Personal info', {'fields': ('full_name',)}), # currently empty tuple
         ('Permissions', {'fields': ('admin','staff','active')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -31,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2' )}
+            'fields': ('email', 'password1', 'password2','admin','staff','active' )}
         ),
     )
     search_fields = ('email',)

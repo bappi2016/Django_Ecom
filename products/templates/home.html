@@ -1,8 +1,4 @@
 {% extends 'base.html' %}
-
-
->
-
 {% block content %}
 
 <!--================Home Banner Area =================-->
@@ -18,7 +14,7 @@
 <!--================Clients Logo Area =================-->
     {% include 'partials/_clients_logo.html' %}
 <!--================Clients Logo Area =================--
-{% load static %}
+
 
 
 <!--================Feature Product Area =================-->
@@ -36,12 +32,12 @@
 						<div class="col col1">
 						<div class="f_p_item">
 							<div class="f_p_img">
-								<img class="img-fluid" src="{% static 'img/product/feature-product/f-p-1.jpg' %}" alt="">
+								<img class="img-fluid" src="{{ product.image.url }}" alt="">
 								<div class="p_icon">
 									<a href="#">
 										<i class="lnr lnr-heart"></i>
 									</a>
-									<a href="#">
+									<a href="{}">
 										<i class="lnr lnr-cart"></i>
 									</a>
 								</div>
