@@ -10,7 +10,6 @@ def cart(request): # session will get cart when the url is being requested
     total = 0
     for item in products:
         total += item.price # price is the attribute of Cart model
-    # print(total)
     cart_obj.total = total
     cart_obj.save()
 

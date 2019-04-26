@@ -1,8 +1,11 @@
 from django.shortcuts import render, Http404
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.views import View
+from django.contrib.auth.forms import AuthenticationForm
 from .models import Product
 from carts.models import Cart
+from orders.models import Order
+from billing.models import BillingProfile
 from django.views.generic import ListView, DetailView, \
     CreateView, UpdateView, DeleteView, FormView  # Generic editing views for editing content
 
@@ -90,3 +93,33 @@ def update_cart(request):
         request.session['cart_items'] = cart_obj.products.count()
         # return redirect(product_obj.get_absolute_url())
     return redirect('carts:cart') # namespace:url
+
+
+
+def checkout_home(request):
+    cart_obj, cart_created = Cart.objects.get_cart_or_create(request)  # this will give us the current instance of the cart
+    order_obj = None
+    if cart_created or cart_obj.products.count() == 0: # if the cart already exist in the view - store in the cache by a logged in user- we will redirect him to that cart
+        return redirect('carts:cart')  # namespace:url
+    else: # else-  we will make the order_obj when there is not any previous cart present or exist in the view- a new users continuous flow
+        order_obj,new_order_obj = Order.objects.get_or_create(cart=cart_obj) # if there is not any existing cart in the order create and saved it
+
+    user = request.user
+    billing_profile = None
+    login_form = AuthenticationForm
+    if user.is_authenticated:
+        billing_profile,billing_profile_created = BillingProfile.objects.get_or_create(user=user) #aslogged in user
+
+    context = {
+        'billing_profile':billing_profile,
+        'order': order_obj,
+        'cart': cart_obj,
+        'login_form':login_form
+    }
+
+
+
+
+
+
+    return render(request,'carts/checkout.html',context)

@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'products',
     'accounts',
     'carts',
+    'orders',
+    'billing',
 ]
 
 MIDDLEWARE = [
@@ -135,7 +137,7 @@ TEMPLATE_DIRS = (
 
 
 
-
+LOGIN_REDIRECT_URL = '/'
 
 
 STATIC_URL = '/static/'
